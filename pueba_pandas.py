@@ -13,16 +13,21 @@ https://primero10.blogspot.com/2020/05/trabajo-con-planes-de-seaborn.html
 import pandas as pd
 import seaborn as sb
 import os
+import errno
+
     
 
 # Primero importamos el dataset planets de seaborn
-
 planets = sb.load_dataset('planets')
 planets.head()
 
 # crear carpeta donde se alojan los CSV
-
-os.mkdir('data')
+# en este caso si existe la carpeta, se usa un if: con una libreria "errno"
+try:
+    os.mkdir('data')
+except OSError as e:
+    if e.errno != errno.EEXIST:
+        raise
 
 planets.to_csv("data/planets.csv")
 
@@ -32,7 +37,6 @@ in_2008.head()
 
 # Un filtro en la comuna masa menor a 4
 masa = planets[planets["mass"] < 4]
-print (masa)
 
 # Para crear un filtro por periodio orbital que sea mayor a 0, luego grabar en CSV
 periodo = planets[planets["orbital_period"] > 0]
@@ -56,4 +60,7 @@ p.to_csv("data/masa_sin_nulos.csv")
 # Filtrar por dato del campo. ejemplo filtrar exoplanetas descubiertos entre 2008 y 2009. y grabar en un csv
 planets_in_years = planets[planets.year.isin([2008, 2009])]
 planets_in_years.head().to_csv("data/2008-2009.csv")
+
+masa = pd.read_csv("data/masa_sin_nulos.csv")
+planets = pd.read_csv("data/mas_nulos.csv")
 
